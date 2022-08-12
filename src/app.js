@@ -22,6 +22,7 @@ app.use(express.json());
 //         res.status(400).send(e);
 //     });
 // })
+
 app.post("/students", async (req, res) => {
     try {
         const student = new Student(req.body);
@@ -31,6 +32,48 @@ app.post("/students", async (req, res) => {
         res.status(400).send(e);
     }
 
+})
+// app.get("/students", async (req, res) => {
+//     try{
+//         const students = await Student.find();
+//         res.send(students)
+//     }catch(e){
+//         res.send(e);
+//     }
+
+// })
+app.get("/students", (req, res) => {
+    const students = Student.find().then(() => {
+        res.status(200).send(students);
+    }).catch((e) => {
+        res.status(500).send(e);
+    });
+})
+// app.get("/students/:id", async (req, res) => {
+//     try {
+//         const _id = req.params.id;
+//         const studentData = await Student.findById(_id);
+//         if (!studentData) {
+//             res.status(404).send("not found");
+//         } else {
+//             res.status(200).send(studentData);
+//         }
+//     } catch (e) {
+//         res.status(500).send(e);
+//     }
+// })
+app.get("/students/:name", async (req, res) => {
+    try {
+        const name = req.params.name;
+        const studentData = await Student.findOne({name:name}).exec();
+        if (!studentData) {
+            res.status(404).send("not found");
+        } else {
+            res.status(200).send(studentData);
+        }
+    } catch (e) {
+        res.status(500).send(e);
+    }
 })
 app.listen(port, () => {
     console.log(`connection on port ${port}`);
