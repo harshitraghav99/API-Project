@@ -33,22 +33,22 @@ app.post("/students", async (req, res) => {
     }
 
 })
-// app.get("/students", async (req, res) => {
-//     try{
-//         const students = await Student.find();
-//         res.send(students)
-//     }catch(e){
-//         res.send(e);
-//     }
+app.get("/students", async (req, res) => {
+    try{
+        const students = await Student.find();
+        res.send(students)
+    }catch(e){
+        res.send(e);
+    }
 
-// })
-app.get("/students", (req, res) => {
-    const students = Student.find().then(() => {
-        res.status(200).send(students);
-    }).catch((e) => {
-        res.status(500).send(e);
-    });
 })
+// app.get("/students", (req, res) => {
+//     const students = Student.find().then(() => {
+//         res.status(200).send(students);
+//     }).catch((e) => {
+//         res.status(500).send(e);
+//     });
+// })
 // app.get("/students/:id", async (req, res) => {
 //     try {
 //         const _id = req.params.id;
@@ -65,7 +65,7 @@ app.get("/students", (req, res) => {
 app.get("/students/:name", async (req, res) => {
     try {
         const name = req.params.name;
-        const studentData = await Student.findOne({name:name}).exec();
+        const studentData = await Student.findOne({ name: name }).exec();
         if (!studentData) {
             res.status(404).send("not found");
         } else {
@@ -75,16 +75,30 @@ app.get("/students/:name", async (req, res) => {
         res.status(500).send(e);
     }
 })
-app.patch("/students/:id",async(req,res)=>{
+app.patch("/students/:id", async (req, res) => {
     try {
         const _id = req.params.id;
-        const upadteStudent= await Student.findByIdAndUpdate(_id,req.body,{
-            new:true
+        const upadteStudent = await Student.findByIdAndUpdate(_id, req.body, {
+            new: true
         });
         res.status(200).send(upadteStudent);
 
     } catch (e) {
         res.status(404).send(e);
+    }
+})
+app.delete("/students/:id", async (req, res) => {
+    try {
+        const _id = req.params.id;
+        const deleteStudent = await Student.findByIdAndDelete(_id);
+        if (!_id) {
+            return res.status(404).send();
+        }
+        else {
+            res.send(deleteStudent);
+        }
+    } catch (error) {
+        res.status(500).send(error);
     }
 })
 app.listen(port, () => {
